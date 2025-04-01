@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 도구 모음 - 챗봇, 이미지 생성, 코드 개발 등</title>
+    <!-- 파비콘 추가 -->
+    <link rel="icon" href="brain-favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="ai.css" />
+    <script src="ai.js" defer></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- 접근성 건너뛰기 링크 -->
+    <a href="#main-content" class="skip-to-content">메인 콘텐츠로 건너뛰기</a>
+
+    <!-- 스크롤 진행 표시기 추가 -->
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <nav class="globalnav">
+      <div class="nav-items">
+        <div><a href="#ai-section">AI 챗봇</a></div>
+        <div><a href="#prompt-section">추천 프롬프트</a></div>
+        <div><a href="#ai-tools-section">AI 도구 모음</a></div>
+        <div><a href="#spell-section">맞춤법 검사</a></div>
+        <div>
+          <a href="#favorites-section" id="favorites-menu">즐겨찾기</a>
+        </div>
+        <div><a href="#history-section">히스토리</a></div>
+        <div class="theme-toggle">
+          <label class="theme-switch">
+            <input type="checkbox" id="themeSwitch" />
+            <span class="slider">
+              <span class="theme-label light">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+              </span>
+              <span class="theme-label dark">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                  ></path>
+                </svg>
+              </span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 검색 기능 추가 -->
+    <div class="search-container">
+      <div class="search-wrapper">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="AI 도구 검색 (최소 2글자 이상)"
+          aria-label="AI 도구 검색"
+        />
+        <button class="search-button" aria-label="검색">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+      <div id="searchResults" class="search-results"></div>
+    </div>
+
+    <div class="page-wrapper">
+      <div id="main-content" class="section-container" data-theme="auto">
+        <!-- 주요 기능 영역: 2열 그리드 -->
+        <div class="main-grid">
+          <!-- 왼쪽 열: AI 챗봇 및 맞춤법 검사 -->
+          <div class="main-column">
+            <div class="section" id="ai-section">
+              <h2 class="section-title">AI 챗봇 문의하기</h2>
+              <div class="input-section">
+                <textarea
+                  id="userPrompt"
+                  class="input-url-converter"
+                  placeholder="AI 챗봇에게 물어볼 내용을 입력하세요"
+                ></textarea>
+                <button
+                  id="submitBtn"
+                  class="mgmt-button"
+                  aria-label="AI 챗봇에게 문의하기"
+                >
+                  AI 챗봇에게 문의하기
+                </button>
+              </div>
+              <div id="responses"></div>
+            </div>
+
+            <div class="section" id="spell-section">
+              <h2 class="section-title">맞춤법 검사하기</h2>
+              <div class="input-section">
+                <textarea
+                  id="spellCheckPrompt"
+                  class="input-url-converter"
+                  placeholder="맞춤법을 검사할 내용을 입력하세요"
+                ></textarea>
+                <button
+                  id="spellCheckBtn"
+                  class="mgmt-button"
+                  aria-label="맞춤법 검사하기"
+                >
+                  맞춤법 검사하기
+                </button>
+              </div>
+              <div id="spellCheckResult"></div>
+            </div>
+          </div>
+
+          <!-- 오른쪽 열: 프롬프트 및 즐겨찾기 -->
+          <div class="main-column">
+            <div class="section" id="prompt-section">
+              <h2 class="section-title">추천 프롬프트</h2>
+
+              <!-- 기본 변환 (최상단 전체 너비) -->
+              <div class="prompt-card main-conversion">
+                <h3 class="prompt-category">🔄 기본 변환</h3>
+                <div class="prompt-items">
+                  <!-- 기존 프롬프트 항목들 유지 -->
+                  <button
+                    class="prompt-item"
+                    data-prompt="다음 내용을 더 전문적이고 격식있는 표현으로 바꿔주세요. 원문의 의미는 유지하되, 비즈니스 환경에 적합한 어조로 수정해주세요:"
+                    aria-label="전문적 표현으로 변환 프롬프트 복사"
+                  >
+                    전문적 표현으로 변환
+                    <span class="copy-icon" aria-hidden="true">📋</span>
+                  </button>
+                  <button
+                    class="prompt-item"
+                    data-prompt="다음 내용을 3줄로 요약해주세요. 첫 줄은 핵심 주제, 둘째 줄은 주요 논점, 셋째 줄은 결론이나 시사점을 담아주세요:"
+                    aria-label="구조적 요약 프롬프트 복사"
+                  >
+                    구조적 요약
+                    <span class="copy-icon" aria-hidden="true">📋</span>
+                  </button>
+                  <button
+                    class="prompt-item"
+                    data-prompt="다음 내용에 대해 나의 입장에서 공손하고 전문적인 답장을 작성해주세요. 특히 상대방의 의견을 존중하면서도 내 의견을 명확히 전달하는 방식으로 작성해주세요:"
+                    aria-label="전문적 답장 프롬프트 복사"
+                  >
+                    전문적 답장
+                    <span class="copy-icon" aria-hidden="true">📋</span>
+                  </button>
+                  <button
+                    class="prompt-item"
+                    data-prompt="다음 내용으로 공식 이메일을 작성해주세요. 서두에 인사말, 본문에 핵심 내용, 말미에 후속 조치 제안과 맺음말을 포함해주세요:"
+                    aria-label="공식 이메일 작성 프롬프트 복사"
+                  >
+                    공식 이메일 작성
+                    <span class="copy-icon" aria-hidden="true">📋</span>
+                  </button>
+                  <button
+                    class="prompt-item"
+                    data-prompt="다음 한글 내용을 영어로 번역해주세요. 비즈니스 맥락을 고려하여 전문 용어는 업계 표준 용어를 사용하고, 문화적 뉘앙스도 자연스럽게 반영해주세요:"
+                    aria-label="비즈니스 영어 번역 프롬프트 복사"
+                  >
+                    비즈니스 영어 번역
+                    <span class="copy-icon" aria-hidden="true">📋</span>
+                  </button>
+                  <button
+                    class="prompt-item"
+                    data-prompt="다음 영어 내용을 한글로 번역해주세요. 전문 용어는 국내 업계 표준을 참고하고, 자연스러운 한국어 비즈니스 표현으로 변환해주세요:"
+                    aria-label="비즈니스 한글 번역 프롬프트 복사"
+                  >
+                    비즈니스 한글 번역
+                    <span class="copy-icon" aria-hidden="true">📋</span>
+                  </button>
+                  <button
+                    class="prompt-item"
+                    data-prompt="다음 용어나 개념에 대해 다음 구조로 설명해주세요: 1) 간단한 정의, 2) 실무적 의미, 3) 구체적 적용 사례, 4) 관련 주요 용어:"
+                    aria-label="실무적 정의 프롬프트 복사"
+                  >
+                    실무적 정의
+                    <span class="copy-icon" aria-hidden="true">📋</span>
+                  </button>
+                  <button
+                    class="prompt-item"
+                    data-prompt="다음 내용에 어울리는 제목을 다음 형식으로 추천해주세요: 1) SEO 최적화 제목, 2) 소셜미디어용 감성적 제목, 3) 뉴스 형식의 전문적 제목:"
+                    aria-label="맥락별 제목 작성 프롬프트 복사"
+                  >
+                    맥락별 제목 작성
+                    <span class="copy-icon" aria-hidden="true">📋</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 2열 레이아웃을 위한 그리드 컨테이너 -->
+              <div class="prompt-grid">
+                <!-- 왼쪽 열 -->
+                <div class="prompt-column">
+                  <div class="prompt-card">
+                    <h3 class="prompt-category">✍️ 콘텐츠 작성</h3>
+                    <div class="prompt-items">
+                      <button
+                        class="prompt-item"
+                        data-prompt="다음 주제로 블로그 포스트를 작성해주세요. 다음 구조를 따라주세요: 1) 흥미로운 도입부, 2) 핵심 주장 3개, 3) 각 주장별 구체적 근거와 예시, 4) 독자 행동 유도 결론, 5) SEO 키워드 5개:"
+                        aria-label="구조적 블로그 작성 프롬프트 복사"
+                      >
+                        구조적 블로그 작성
+                        <span class="copy-icon" aria-hidden="true">📋</span>
+                      </button>
+                      <button
+                        class="prompt-item"
+                        data-prompt="다음 내용을 공식 보고서 형식으로 작성해주세요. 포함할 내용: 1) 요약(Executive Summary), 2) 현황 분석, 3) 주요 발견사항, 4) 권고사항, 5) 기대효과, 6) 첨부자료:"
+                        aria-label="공식 보고서 작성 프롬프트 복사"
+                      >
+                        공식 보고서 작성
+                        <span class="copy-icon" aria-hidden="true">📋</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="prompt-card">
+                    <h3 class="prompt-category">💡 전략 기획</h3>
+                    <div class="prompt-items">
+                      <button
+                        class="prompt-item"
+                        data-prompt="다음 주제에 대한 전략을 수립해주세요. 포함할 내용: 1) 현황 분석, 2) 목표 설정(KPI 포함), 3) 세부 실행 전략 3가지, 4) 필요 자원, 5) 위험 요소 및 대응 방안, 6) 타임라인:"
+                        aria-label="전략 기획 프롬프트 복사"
+                      >
+                        전략 기획
+                        <span class="copy-icon" aria-hidden="true">📋</span>
+                      </button>
+                      <button
+                        class="prompt-item"
+                        data-prompt="다음 문제에 대한 해결 방안을 디자인 씽킹 프로세스로 도출해주세요: 1) 공감하기 - 사용자 관점 분석, 2) 문제 정의, 3) 아이디어 도출(최소 5개), 4) 프로토타입 제안, 5) 테스트 계획:"
+                        aria-label="디자인 씽킹 프롬프트 복사"
+                      >
+                        디자인 씽킹
+                        <span class="copy-icon" aria-hidden="true">📋</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 오른쪽 열 -->
+                <div class="prompt-column">
+                  <div class="prompt-card">
+                    <h3 class="prompt-category">🎨 마케팅 기획</h3>
+                    <div class="prompt-items">
+                      <button
+                        class="prompt-item"
+                        data-prompt="다음 제품/서비스의 마케팅 캠페인을 기획해주세요. 포함할 내용: 1) 타겟 페르소나 정의, 2) 핵심 메시지, 3) 채널별 전략, 4) 콘텐츠 캘린더, 5) 예산 배분, 6) 성과 측정 방안:"
+                        aria-label="마케팅 캠페인 기획 프롬프트 복사"
+                      >
+                        마케팅 캠페인 기획
+                        <span class="copy-icon" aria-hidden="true">📋</span>
+                      </button>
+                      <button
+                        class="prompt-item"
+                        data-prompt="다음 제품/서비스의 브랜드 스토리를 작성해주세요. 포함할 내용: 1) 브랜드 핵심 가치, 2) 브랜드 퍼스널리티, 3) 타겟 고객 정의, 4) 핵심 메시지, 5) 스토리텔링 요소, 6) 커뮤니케이션 톤앤매너:"
+                        aria-label="브랜드 스토리 작성 프롬프트 복사"
+                      >
+                        브랜드 스토리 작성
+                        <span class="copy-icon" aria-hidden="true">📋</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="prompt-card">
+                    <h3 class="prompt-category">📊 데이터 분석</h3>
+                    <div class="prompt-items">
+                      <button
+                        class="prompt-item"
+                        data-prompt="다음 데이터를 분석하여 인사이트를 도출해주세요. 포함할 내용: 1) 주요 트렌드 3가지, 2) 이상치 및 특이사항, 3) 세그먼트별 특성, 4) 예측 및 전망, 5) 개선 제안사항:"
+                        aria-label="데이터 인사이트 프롬프트 복사"
+                      >
+                        심층 데이터 분석
+                        <span class="copy-icon" aria-hidden="true">📋</span>
+                      </button>
+                      <button
+                        class="prompt-item"
+                        data-prompt="다음 성과 지표에 대한 대시보드를 설계해주세요. 포함할 내용: 1) 핵심 KPI 정의, 2) 측정 매트릭스, 3) 시각화 방안, 4) 데이터 수집 방법, 5) 업데이트 주기, 6) 알림 설정 기준:"
+                        aria-label="대시보드 설계 프롬프트 복사"
+                      >
+                        대시보드 설계
+                        <span class="copy-icon" aria-hidden="true">📋</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 사용자 지정 프롬프트 섹션 -->
+              <div class="prompt-card">
+                <h3 class="prompt-category">🔧 사용자 정의 프롬프트</h3>
+                <p class="custom-prompt-description">
+                  자주 사용하는 프롬프트를 저장하고 관리하세요.
+                </p>
+
+                <div class="custom-prompt-form">
+                  <div class="form-group">
+                    <label for="customPromptTitle">제목</label>
+                    <input
+                      type="text"
+                      id="customPromptTitle"
+                      class="form-input"
+                      placeholder="프롬프트 제목"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="customPromptText">프롬프트 내용</label>
+                    <textarea
+                      id="customPromptText"
+                      class="form-textarea"
+                      placeholder="프롬프트 내용을 입력하세요"
+                      required
+                    ></textarea>
+                  </div>
+                  <button id="saveCustomPrompt" class="save-prompt-btn">
+                    프롬프트 저장
+                  </button>
+                </div>
+
+                <div class="custom-prompts-container">
+                  <h4 class="custom-prompts-title">저장된 프롬프트</h4>
+                  <div id="customPromptsList" class="custom-prompts-list">
+                    <p class="no-custom-prompts">
+                      아직 저장된 프롬프트가 없습니다.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 도구 모음 섹션 (전체 너비) -->
+        <div class="section" id="ai-tools-section">
+          <h2 class="section-title">AI 도구 모음</h2>
+
+          <!-- 컨트롤 섹션 추가 -->
+          <div class="tools-controls">
+            <div class="view-options">
+              <button
+                class="view-btn active"
+                data-view="grid"
+                aria-label="그리드 뷰"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </button>
+              <button class="view-btn" data-view="list" aria-label="리스트 뷰">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <div class="sort-options">
+              <label for="sort-tools">정렬:</label>
+              <select id="sort-tools" class="sort-select">
+                <option value="name-asc">이름 (오름차순)</option>
+                <option value="name-desc">이름 (내림차순)</option>
+                <option value="date-desc">최신 업데이트순</option>
+                <option value="popular">인기순</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 필터 태그 목록 수정 -->
+          <div class="tags-filter">
+            <button class="tag-btn active" data-filter="all">전체</button>
+            <button class="tag-btn" data-filter="chatbot">챗봇</button>
+            <button class="tag-btn" data-filter="productivity">생산성</button>
+            <button class="tag-btn" data-filter="writing">글쓰기</button>
+            <button class="tag-btn" data-filter="video">비디오</button>
+            <button class="tag-btn" data-filter="audio">오디오</button>
+            <button class="tag-btn" data-filter="search">검색</button>
+            <button class="tag-btn" data-filter="photo">사진</button>
+            <button class="tag-btn" data-filter="code-development">
+              코드 개발
+            </button>
+            <button class="tag-btn" data-filter="education">교육/학습</button>
+            <button class="tag-btn" data-filter="translation">번역/언어</button>
+            <button class="tag-btn" data-filter="data-analysis">
+              데이터 분석
+            </button>
+            <button class="tag-btn" data-filter="image-generation">
+              이미지 생성
+            </button>
+            <button class="tag-btn" data-filter="personal-assistant">
+              개인 비서
+            </button>
+            <button class="tag-btn" data-filter="website-builder">
+              웹사이트 빌더
+            </button>
+            <button class="tag-btn" data-filter="marketing">마케팅</button>
+            <button class="tag-btn" data-filter="other">기타</button>
+          </div>
+
+          <!-- AI 카테고리 섹션들 -->
+          <div class="tool-categories-container">
+            <!-- AI 챗봇 섹션 -->
+            <div class="ai-category" data-category="chatbot">
+              <h3 class="category-title">🤖 AI 챗봇</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://chat.openai.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>ChatGPT</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="chatgpt"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>OpenAI에서 개발한 대화형 AI 챗봇</p>
+                  <div class="tool-card-meta">
+                    <span class="tool-model-tag">GPT-4o</span>
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.05
+                    </span>
+                  </div>
+                </a>
+                <a href="https://claude.ai/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Claude</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="claude"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>
+                    15만 단어 이상의 텍스트를 처리할 수 있는 고급 AI 어시스턴트
+                  </p>
+                  <div class="tool-card-meta">
+                    <span class="tool-model-tag">Claude 3.5 Sonnet</span>
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.05
+                    </span>
+                  </div>
+                </a>
+                <a
+                  href="https://gemini.google.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Gemini</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="gemini"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>Google의 멀티모달 AI 모델</p>
+                  <div class="tool-card-meta">
+                    <span class="tool-model-tag">Gemini 1.5 Pro</span>
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.05
+                    </span>
+                  </div>
+                </a>
+                <a href="https://clova.ai/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>NAVER CLOVA</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="clova"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>한국어와 한국 문화에 최적화된 NAVER의 생성형 AI</p>
+                  <div class="tool-card-meta">
+                    <span class="tool-model-tag">HyperCLOVA X</span>
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.03
+                    </span>
+                  </div>
+                </a>
+                <a href="https://upstage.ai/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Upstage</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="upstage"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>Solar LLM 기반의 한국 AI 스타트업의 생성형 AI 서비스</p>
+                  <div class="tool-card-meta">
+                    <span class="tool-model-tag">Solar LLM</span>
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.04
+                    </span>
+                  </div>
+                </a>
+                <a href="https://lilys.ai/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Lilys AI</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="lilys"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>
+                    YouTube, PDF, 웹사이트 등 다양한 콘텐츠를 인간 수준의
+                    요약으로 변환하는 지식 관리 도구
+                  </p>
+                  <div class="tool-card-meta">
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.03
+                    </span>
+                  </div>
+                </a>
+                <a
+                  href="https://chat.deepseek.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>DeepSeek</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="deepseek"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>코딩과 채팅을 위한 오픈소스 AI 플랫폼</p>
+                  <div class="tool-card-meta">
+                    <span class="tool-model-tag">DeepSeek Coder</span>
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.02
+                    </span>
+                  </div>
+                </a>
+                <a href="https://grok.x.ai" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Grok</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="grok"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>X(구 트위터)에서 개발한 대화형 AI 챗봇</p>
+                  <div class="tool-card-meta">
+                    <span class="tool-model-tag">Grok-1.5</span>
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.04
+                    </span>
+                  </div>
+                </a>
+                <a
+                  href="https://aistudio.google.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Google AI Studio</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="google-ai-studio"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>
+                    Google의 Gemini 모델을 실험하고 프롬프트를 테스트할 수 있는
+                    플랫폼
+                  </p>
+                  <div class="tool-card-meta">
+                    <span class="tool-model-tag">Gemini API</span>
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.02
+                    </span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- 콘텐츠 제작 섹션 -->
+            <div class="ai-category" data-category="writing">
+              <h3 class="category-title">✍️ 콘텐츠 제작</h3>
+              <div class="tool-grid">
+                <a href="https://rytr.me/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Rytr</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="rytr"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>마케팅 문안과 블로그 게시물 생성을 위한 AI 글쓰기 도구</p>
+                </a>
+                <a
+                  href="https://www.grammarly.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Grammarly</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="grammarly"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>실시간 문법 검사 및 작문 개선 도구</p>
+                </a>
+                <a
+                  href="https://www.midjourney.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Midjourney</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="midjourney"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>고품질 AI 이미지 생성 도구</p>
+                </a>
+                <a
+                  href="https://www.jasper.ai/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Jasper.ai</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="jasper-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>50개 이상의 템플릿을 제공하는 AI 콘텐츠 생성 도구</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- 비디오 제작 섹션 -->
+            <div class="ai-category" data-category="video">
+              <h3 class="category-title">🎥 비디오 제작</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://www.synthesia.io/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Synthesia</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="synthesia"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 비디오 생성 및 아바타 커스터마이징 도구</p>
+                </a>
+                <a
+                  href="https://runwayml.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Runway</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="runway"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>텍스트와 이미지로 고품질 비디오 생성</p>
+                </a>
+                <a
+                  href="https://www.wondershare.com/filmora/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Filmora</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="filmora"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 비디오 편집 도구</p>
+                </a>
+                <a href="https://zeemo.ai/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Zeemo AI</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="zeemo-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>자동 자막 생성 및 비디오 편집 도구</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- 생산성 도구 섹션 -->
+            <div class="ai-category" data-category="productivity">
+              <h3 class="category-title">⚡ 생산성 도구</h3>
+              <div class="tool-grid">
+                <a href="https://lilys.ai/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Lilys AI</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="lilys"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>
+                    YouTube, PDF, 웹사이트 등 다양한 콘텐츠를 인간 수준의
+                    요약으로 변환하는 지식 관리 도구
+                  </p>
+                  <div class="tool-card-meta">
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.03
+                    </span>
+                  </div>
+                </a>
+                <a
+                  href="https://www.notion.so/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Notion AI</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="notion-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 지식 관리 및 협업 도구</p>
+                  <div class="tool-card-meta">
+                    <span class="tool-update-date">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      2024.01
+                    </span>
+                  </div>
+                </a>
+                <a href="https://gamma.app/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Gamma</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="gamma"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI로 프레젠테이션과 문서를 쉽게 생성</p>
+                </a>
+                <a
+                  href="https://www.beautiful.ai/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Beautiful.ai</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="beautiful-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 프레젠테이션 디자인 도구</p>
+                </a>
+                <a
+                  href="https://copilot.microsoft.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Microsoft Copilot</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="microsoft-copilot"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>문서 작성과 프레젠테이션 생성을 위한 AI 도구</p>
+                </a>
+                <a
+                  href="https://notebooklm.google.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>NotebookLM</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="notebooklm"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>
+                    문서를 AI로 분석하고 요약하며 인사이트를 추출하는 노트 관리
+                    도구
+                  </p>
+                </a>
+              </div>
+            </div>
+
+            <!-- 오디오/음악 섹션 -->
+            <div class="ai-category" data-category="audio">
+              <h3 class="category-title">🎵 오디오/음악</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://elevenlabs.io/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>ElevenLabs</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="elevenlabs"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>고품질 AI 음성 생성 도구</p>
+                </a>
+                <a href="https://murf.ai/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Murf</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="murf"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>전문적인 음성 생성 및 편집 도구</p>
+                </a>
+                <a
+                  href="https://www.brain.fm/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Brain.fm</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="brain-fm"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 생성 집중력 향상 음악</p>
+                </a>
+                <a
+                  href="https://www.suno.ai/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Suno</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="suno"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 음악 생성 및 작곡 도구</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- 검색 엔진 섹션 -->
+            <div class="ai-category" data-category="search">
+              <h3 class="category-title">🔍 검색 엔진</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://www.perplexity.ai/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Perplexity</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="perplexity"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 정보 검색 및 분석 엔진</p>
+                </a>
+                <a
+                  href="https://consensus.app/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Consensus</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="consensus"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>연구자를 위한 AI 검색 엔진</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- 사진 편집 섹션 -->
+            <div class="ai-category" data-category="photo">
+              <h3 class="category-title">📸 사진 편집</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://prisma-ai.com/lensa"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Lensa</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="lensa"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 사진 편집 및 보정 앱</p>
+                </a>
+                <a
+                  href="https://firefly.adobe.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Adobe Firefly</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="adobe-firefly"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>Adobe의 AI 기반 이미지 편집 도구</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- 기타 도구 섹션 -->
+            <div class="ai-category" data-category="other">
+              <h3 class="category-title">🛠️ 기타 도구</h3>
+              <div class="tool-grid">
+                <a href="https://bubble.io/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Bubble</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="bubble"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>노코드 웹 앱 개발 플랫폼</p>
+                </a>
+                <a href="https://asana.com/" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Asana</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="asana"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 프로젝트 관리 도구</p>
+                </a>
+                <a
+                  href="https://www.tidio.com/"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Tidio AI</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="tidio-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 챗봇 기반 고객 서비스 도구</p>
+                </a>
+                <a
+                  href="https://azure.microsoft.com/ko-kr/products/ai-services"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Azure AI</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="azure-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>마이크로소프트의 종합 AI 서비스</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- AI 코드 개발 섹션 -->
+            <div class="ai-category" data-category="code-development">
+              <h3 class="category-title">💻 AI 코드 개발</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://github.com/features/copilot"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>GitHub Copilot</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="github-copilot"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>자연어로 코드를 작성하고 추천해주는 AI 도구</p>
+                </a>
+                <a
+                  href="https://replit.com/ghostwriter"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Replit GhostWriter</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="replit-ghostwriter"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>코드 완성 및 디버깅을 도와주는 AI 에디터</p>
+                </a>
+                <a href="https://cursor.sh" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Cursor</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="cursor"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 코드 에디터로 개발 속도를 향상</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- AI 교육/학습 섹션 -->
+            <div class="ai-category" data-category="education">
+              <h3 class="category-title">📚 AI 교육/학습</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://duolingo.com"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Duolingo Max</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="duolingo-max"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 강화 언어 학습 플랫폼</p>
+                </a>
+                <a
+                  href="https://khanacademy.org/khan-labs"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Khanmigo</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="khanmigo"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>칸 아카데미의 AI 튜터링 서비스</p>
+                </a>
+                <a href="https://quizlet.com" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Quizlet Q-Chat</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="quizlet-qchat"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 학습 도우미</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- AI 번역/언어 도구 섹션 -->
+            <div class="ai-category" data-category="translation">
+              <h3 class="category-title">🌐 AI 번역/언어 도구</h3>
+              <div class="tool-grid">
+                <a href="https://deepl.com" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>DeepL</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="deepl"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>고품질 AI 번역 서비스</p>
+                </a>
+                <a
+                  href="https://papago.naver.com"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Papago</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="papago"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>네이버의 AI 번역 서비스</p>
+                </a>
+                <a
+                  href="https://platform.openai.com/docs/guides/speech-to-text"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Whisper API</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="whisper-api"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>OpenAI의 오디오 텍스트 변환 도구</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- AI 데이터 분석 섹션 -->
+            <div class="ai-category" data-category="data-analysis">
+              <h3 class="category-title">📊 AI 데이터 분석</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://obviously.ai"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Obviously.ai</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="obviously-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>코드 없이 데이터 분석을 수행하는 AI 도구</p>
+                </a>
+                <a href="https://tableau.com" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Tableau with Einstein</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="tableau-einstein"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 데이터 시각화 도구</p>
+                </a>
+                <a href="https://dataiku.com" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Dataiku</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="dataiku"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>엔터프라이즈 AI 및 ML 플랫폼</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- AI 이미지 생성 섹션 -->
+            <div class="ai-category" data-category="image-generation">
+              <h3 class="category-title">🎨 AI 이미지 생성</h3>
+              <div class="tool-grid">
+                <a
+                  href="https://openai.com/dall-e-3"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>DALL-E</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="dall-e"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>OpenAI의 텍스트 기반 이미지 생성 AI</p>
+                </a>
+                <a
+                  href="https://stability.ai"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Stable Diffusion</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="stable-diffusion"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>오픈소스 이미지 생성 AI</p>
+                </a>
+                <a
+                  href="https://midjourney.com"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>Midjourney</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="midjourney-pro"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>고품질 AI 이미지 생성 도구</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- AI 개인 비서 섹션 -->
+            <div class="ai-category" data-category="personal-assistant">
+              <h3 class="category-title">🤵 AI 개인 비서</h3>
+              <div class="tool-grid">
+                <a href="https://otter.ai" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Otter.ai</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="otter-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 회의 기록 및 요약 도구</p>
+                </a>
+                <a href="https://mem.ai" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Mem.ai</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="mem-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 기반 노트 작성 및 지식 관리 도구</p>
+                </a>
+                <a href="https://reclaim.ai" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Reclaim.ai</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="reclaim-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 스케줄링 어시스턴트</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- AI 웹사이트 빌더 섹션 -->
+            <div class="ai-category" data-category="website-builder">
+              <h3 class="category-title">🌐 AI 웹사이트 빌더</h3>
+              <div class="tool-grid">
+                <a href="https://10web.io" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>10Web</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="10web"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 웹사이트 빌더</p>
+                </a>
+                <a href="https://framer.com" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Framer AI</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="framer-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI로 웹사이트를 디자인하고 생성</p>
+                </a>
+                <a href="https://durable.co" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Durable</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="durable"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI로 비즈니스 웹사이트 생성</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- AI 마케팅 도구 섹션 -->
+            <div class="ai-category" data-category="marketing">
+              <h3 class="category-title">📣 AI 마케팅 도구</h3>
+              <div class="tool-grid">
+                <a href="https://copy.ai" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Copy.ai</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="copy-ai"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 마케팅 콘텐츠 생성기</p>
+                </a>
+                <a href="https://jasper.ai" target="_blank" class="tool-card">
+                  <div class="tool-card-header">
+                    <h4>Jasper</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="jasper"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 콘텐츠 마케팅 플랫폼</p>
+                </a>
+                <a
+                  href="https://marketmuse.com"
+                  target="_blank"
+                  class="tool-card"
+                >
+                  <div class="tool-card-header">
+                    <h4>MarketMuse</h4>
+                    <button
+                      class="favorite-btn"
+                      data-tool-id="marketmuse"
+                      aria-label="즐겨찾기 추가/제거"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="favorite-icon"
+                      >
+                        <polygon
+                          points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                        ></polygon>
+                      </svg>
+                    </button>
+                  </div>
+                  <p>AI 콘텐츠 전략 및 최적화 도구</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" id="favorites-section">
+          <h2 class="section-title">즐겨찾기</h2>
+          <div id="favorites-container" class="favorites-container">
+            <p class="no-favorites-message">
+              아직 즐겨찾기한 AI 도구가 없습니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="section" id="history-section">
+          <h2 class="section-title">최근 히스토리</h2>
+          <div class="history-header">
+            <p>AI 챗봇에 질문한 내역을 확인하세요.</p>
+            <button id="clearHistoryBtn" class="clear-history-btn">
+              히스토리 비우기
+            </button>
+          </div>
+          <div id="historyContainer" class="history-container">
+            <p class="no-history-message">아직 히스토리가 없습니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 맨 위로 버튼 -->
+    <button id="backToTopBtn" class="back-to-top" aria-label="맨 위로 이동">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+  </body>
+</html>
