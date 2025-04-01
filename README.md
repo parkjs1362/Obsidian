@@ -1,2 +1,1 @@
 # Obsidian
-Private Obsidian Vault
